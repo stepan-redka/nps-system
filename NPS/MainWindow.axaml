@@ -1,0 +1,118 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="NPS.MainWindow"
+        Title="Unicode Adversarial Text Research Tool"
+        Width="720" Height="360"
+        MinWidth="560" MinHeight="300"
+        Background="#0F0F13">
+
+    <Window.Styles>
+        <Style Selector="Border.Card">
+            <Setter Property="Background" Value="#111118"/>
+            <Setter Property="BorderBrush" Value="#1A1A24"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#161620"/>
+            <Setter Property="Foreground" Value="#5C6CF0"/>
+            <Setter Property="BorderBrush" Value="#202030"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Width" Value="72"/>
+            <Setter Property="Padding" Value="0,6"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1E1E2C"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="36,24,36,20">
+
+        <!-- HEADER -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" Spacing="9">
+                <Border Width="2.5" Height="16" CornerRadius="2"
+                        Background="#5B6BFF" VerticalAlignment="Center"/>
+                <TextBlock Text="Unicode Adversarial Text"
+                           FontSize="15" FontWeight="SemiBold"
+                           Foreground="#E2E2EE" VerticalAlignment="Center"/>
+            </StackPanel>
+            <TextBlock Text="RESEARCH TOOL  ·  ACADEMIC PROTOTYPE"
+                       FontSize="9" Foreground="#28283A"
+                       Margin="12,4,0,0" LetterSpacing="2"/>
+        </StackPanel>
+
+        <!-- CARDS — vertically centered in the remaining space -->
+        <Grid Grid.Row="1" VerticalAlignment="Center">
+            <UniformGrid Columns="3" Rows="1">
+
+                <Border Classes="Card" Margin="0,0,6,0">
+                    <StackPanel HorizontalAlignment="Center"
+                                Margin="16,14" MaxWidth="160">
+                        <TextBlock Text="Attack Simulation"
+                                   FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#C8C8DC" TextAlignment="Center"/>
+                        <TextBlock Text="Inject invisible characters and homoglyph substitutions."
+                                   Foreground="#2C2C40" FontSize="10"
+                                   TextWrapping="Wrap" TextAlignment="Center"
+                                   Margin="0,5,0,12"/>
+                        <Button Name="AttackButton" Click="OnAttackClicked" Content="Launch" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="Card" Margin="3,0,3,0">
+                    <StackPanel HorizontalAlignment="Center"
+                                Margin="16,14" MaxWidth="160">
+                        <TextBlock Text="Detection &amp; Normalization"
+                                   FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#C8C8DC" TextAlignment="Center"/>
+                        <TextBlock Text="Analyze text for spoofing and apply normalization defenses."
+                                   Foreground="#2C2C40" FontSize="10"
+                                   TextWrapping="Wrap" TextAlignment="Center"
+                                   Margin="0,5,0,12"/>
+                        <Button Name="DetectButton" Click="OnDetectClicked" Content="Launch" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="Card" Margin="6,0,0,0">
+                    <StackPanel HorizontalAlignment="Center"
+                                Margin="16,14" MaxWidth="160">
+                        <TextBlock Text="Comparative Metrics"
+                                   FontSize="11" FontWeight="SemiBold"
+                                   Foreground="#C8C8DC" TextAlignment="Center"/>
+                        <TextBlock Text="Compare naive vs normalized processing results."
+                                   Foreground="#2C2C40" FontSize="10"
+                                   TextWrapping="Wrap" TextAlignment="Center"
+                                   Margin="0,5,0,12"/>
+                        <Button Name="MetricsButton" Click="OnMetricsClicked" Content="View" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+            </UniformGrid>
+        </Grid>
+
+        <!-- SPACER -->
+        <Border Grid.Row="2" Height="1" Margin="0,18,0,0"
+                Background="#16161E"/>
+
+        <!-- FOOTER -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0" Spacing="5">
+            <TextBlock Text="Docs &amp; usage →"
+                       FontSize="10" Foreground="#22223A"/>
+            <TextBlock Text="github.com/your-org/your-repo"
+                       FontSize="10" Foreground="#3D4D8A"
+                       TextDecorations="Underline" Cursor="Hand"
+                       ToolTip.Tip="https://github.com/your-org/your-repo#readme"/>
+        </StackPanel>
+
+    </Grid>
+</Window>
