@@ -1,4 +1,4 @@
-namespace NPS.Services.Interafaces;
+namespace NPS.Services.Interfaces;
 
 public interface IAnalyticsService
 {

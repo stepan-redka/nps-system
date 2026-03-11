@@ -1,5 +1,5 @@
 namespace NPS.Services;
-using Interafaces;
+using Interfaces;
 
 public class AttackService : IAttackService
 {
