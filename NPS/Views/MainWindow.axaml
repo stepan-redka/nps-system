@@ -111,7 +111,7 @@
             <TextBlock Text="github.com/your-org/your-repo"
                        FontSize="10" Foreground="#3D4D8A"
                        TextDecorations="Underline" Cursor="Hand"
-                       ToolTip.Tip="https://github.com/your-org/your-repo#readme"/>
+                       ToolTip.Tip="https://github.com/stepan-redka/nps-system"/>
         </StackPanel>
 
     </Grid>
