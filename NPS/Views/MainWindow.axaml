@@ -5,8 +5,8 @@
         mc:Ignorable="d"
         x:Class="NPS.MainWindow"
         Title="Unicode Adversarial Text Research Tool"
-        Width="720" Height="360"
-        MinWidth="560" MinHeight="300"
+        MinWidth="520" MinHeight="280"
+        WindowStartupLocation="CenterScreen"
         Background="#0F0F13">
 
     <Window.Styles>
@@ -36,7 +36,7 @@
     <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="36,24,36,20">
 
         <!-- HEADER -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
             <StackPanel Orientation="Horizontal" Spacing="9">
                 <Border Width="2.5" Height="16" CornerRadius="2"
                         Background="#5B6BFF" VerticalAlignment="Center"/>
@@ -49,57 +49,45 @@
                        Margin="12,4,0,0" LetterSpacing="2"/>
         </StackPanel>
 
-        <!-- CARDS — vertically centered in the remaining space -->
-        <Grid Grid.Row="1" VerticalAlignment="Center">
-            <UniformGrid Columns="3" Rows="1">
+        <!-- CARDS — fill the * row entirely -->
+        <UniformGrid Grid.Row="1" Columns="2" Rows="1">
 
-                <Border Classes="Card" Margin="0,0,6,0">
-                    <StackPanel HorizontalAlignment="Center"
-                                Margin="16,14" MaxWidth="160">
-                        <TextBlock Text="Attack Simulation"
-                                   FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#C8C8DC" TextAlignment="Center"/>
-                        <TextBlock Text="Inject invisible characters and homoglyph substitutions."
-                                   Foreground="#2C2C40" FontSize="10"
-                                   TextWrapping="Wrap" TextAlignment="Center"
-                                   Margin="0,5,0,12"/>
-                        <Button Name="AttackButton" Click="OnAttackClicked" Content="Launch" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+            <Border Classes="Card" Margin="0,0,6,0">
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="24,0">
+                    <TextBlock Text="Attack Simulation"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="#C8C8DC" TextAlignment="Center"/>
+                    <TextBlock Text="Inject invisible characters and homoglyph substitutions."
+                               Foreground="#2C2C40" FontSize="10"
+                               TextWrapping="Wrap" TextAlignment="Center"
+                               Margin="0,5,0,12"/>
+                    <Button Name="AttackButton" Click="OnAttackClicked"
+                            Content="Launch" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
 
-                <Border Classes="Card" Margin="3,0,3,0">
-                    <StackPanel HorizontalAlignment="Center"
-                                Margin="16,14" MaxWidth="160">
-                        <TextBlock Text="Detection &amp; Normalization"
-                                   FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#C8C8DC" TextAlignment="Center"/>
-                        <TextBlock Text="Analyze text for spoofing and apply normalization defenses."
-                                   Foreground="#2C2C40" FontSize="10"
-                                   TextWrapping="Wrap" TextAlignment="Center"
-                                   Margin="0,5,0,12"/>
-                        <Button Name="DetectButton" Click="OnDetectClicked" Content="Launch" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
+            <Border Classes="Card" Margin="6,0,0,0">
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Margin="24,0">
+                    <TextBlock Text="Detection &amp; Normalization"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="#C8C8DC" TextAlignment="Center"/>
+                    <TextBlock Text="Analyze text for spoofing and apply normalization defenses."
+                               Foreground="#2C2C40" FontSize="10"
+                               TextWrapping="Wrap" TextAlignment="Center"
+                               Margin="0,5,0,12"/>
+                    <Button Name="DetectButton" Click="OnDetectClicked"
+                            Content="Launch" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
 
-                <Border Classes="Card" Margin="6,0,0,0">
-                    <StackPanel HorizontalAlignment="Center"
-                                Margin="16,14" MaxWidth="160">
-                        <TextBlock Text="Comparative Metrics"
-                                   FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#C8C8DC" TextAlignment="Center"/>
-                        <TextBlock Text="Compare naive vs normalized processing results."
-                                   Foreground="#2C2C40" FontSize="10"
-                                   TextWrapping="Wrap" TextAlignment="Center"
-                                   Margin="0,5,0,12"/>
-                        <Button Name="MetricsButton" Click="OnMetricsClicked" Content="View" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-
-            </UniformGrid>
-        </Grid>
+        </UniformGrid>
 
         <!-- SPACER -->
-        <Border Grid.Row="2" Height="1" Margin="0,18,0,0"
+        <Border Grid.Row="2" Height="1" Margin="0,16,0,0"
                 Background="#16161E"/>
 
         <!-- FOOTER -->
@@ -111,7 +99,7 @@
             <TextBlock Text="github.com/your-org/your-repo"
                        FontSize="10" Foreground="#3D4D8A"
                        TextDecorations="Underline" Cursor="Hand"
-                       ToolTip.Tip="https://github.com/your-org/your-repo#readme"/>
+                       ToolTip.Tip="https://github.com/stepan-redka/nps-system"/>
         </StackPanel>
 
     </Grid>
