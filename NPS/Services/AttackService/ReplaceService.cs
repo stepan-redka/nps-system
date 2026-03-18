@@ -18,7 +18,7 @@ public class ReplaceService : IReplaceService
     
     public string ReplaceWithHomoglyphs(string? text)
     {
-        if (string.IsNullOrEmpty(text)) return text;
+        if (string.IsNullOrEmpty(text)) return string.Empty;
         
         var sb = new StringBuilder(text.Length);
 

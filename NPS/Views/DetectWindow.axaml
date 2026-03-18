@@ -1,68 +1,116 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="NPS.Views.DetectWindow"
-        Title="Detect Simulation"
-        MinWidth="560" MinHeight="300"
-        Background="#0F0F13">
+        Title="Detection Analysis"
+        MinWidth="800" MinHeight="600" Width="1000" Height="700"
+        WindowStartupLocation="CenterScreen">
 
     <Window.Styles>
-        <Style Selector="Button">
-            <Setter Property="Background" Value="#161620"/>
-            <Setter Property="Foreground" Value="#5C6CF0"/>
-            <Setter Property="BorderBrush" Value="#202030"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="Padding" Value="12,6"/>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Style Selector="TextBlock.h2">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
         </Style>
-        <Style Selector="Button:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#1E1E2C"/>
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.value">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>  
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="36,24,36,20">
-
+    <Grid RowDefinitions="Auto,*" Margin="24">
+        
         <!-- HEADER -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,20">
-            <Button Grid.Column="0" Content="← Back" Click="OnBackClicked"
-                    VerticalAlignment="Center"/>
-            <StackPanel Grid.Column="1" Margin="14,0,0,0">
-                <StackPanel Orientation="Horizontal" Spacing="9">
-                    <Border Width="2.5" Height="16" CornerRadius="2"
-                            Background="#5B6BFF" VerticalAlignment="Center"/>
-                    <TextBlock Text="Detect Simulation"
-                               FontSize="15" FontWeight="SemiBold"
-                               Foreground="#E2E2EE" VerticalAlignment="Center"/>
-                </StackPanel>
-                <TextBlock Text="UNICODE ADVERSARIAL TEXT  ·  RESEARCH TOOL"
-                           FontSize="9" Foreground="#28283A"
-                           Margin="12,4,0,0" LetterSpacing="2"/>
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,24">
+            <Button Grid.Column="0" Content="← Back" Click="OnBackClicked" Classes="secondary"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                <TextBlock Text="🔎" FontSize="20" VerticalAlignment="Center"/>
+                <TextBlock Text="Detection &amp; Normalization Analysis" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
 
-        <!-- CONTENT PLACEHOLDER -->
-        <Border Grid.Row="1" Background="#111118" BorderThickness="1"
-                BorderBrush="#1A1A24" CornerRadius="6"
-                VerticalAlignment="Center" HorizontalAlignment="Center"
-                Padding="32,20">
-            <TextBlock Text="Detect module content goes here."
-                       Foreground="#2C2C40" FontSize="11"
-                       TextAlignment="Center"/>
-        </Border>
+        <!-- MAIN CONTENT -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, 360">
+            
+            <!-- LEFT: INPUT -->
+            <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto" Margin="0,0,24,0">
+                <TextBlock Grid.Row="0" Text="Source Text Analysis" Classes="label" Margin="0,0,0,8"/>
+                <TextBox Grid.Row="1" Name="InputTextBox" AcceptsReturn="True" TextWrapping="Wrap" 
+                         Watermark="Paste suspicious text here..." 
+                         FontSize="14" FontFamily="Consolas, monospace"
+                         BorderThickness="1" CornerRadius="4"/>
+                
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="12" Margin="0,16,0,0">
+                    <Button Content="Simulate Analysis" Click="OnAnalyzeClicked" Classes="accent" FontSize="14" FontWeight="Bold" Padding="20,8"/>
+                    <Button Content="Load from File..." Click="OnLoadFileClicked"/>
+                    <Button Content="Clear" Click="OnClearClicked"/>
+                </StackPanel>
+            </Grid>
 
-        <!-- FOOTER -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,10,0,0" Spacing="5">
-            <TextBlock Text="Docs &amp; usage →"
-                       FontSize="10" Foreground="#22223A"/>
-            <TextBlock Text="github.com/stepan-redka/nps-system"
-                       FontSize="10" Foreground="#3D4D8A"
-                       TextDecorations="Underline" Cursor="Hand"
-                       ToolTip.Tip="https://github.com/stepan-redka/nps-system"/>
-        </StackPanel>
+            <!-- RIGHT: DASHBOARD -->
+            <Border Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" 
+                    CornerRadius="12" Padding="24" BoxShadow="0 4 12 0 #10000000">
+                <ScrollViewer>
+                    <StackPanel Spacing="24">
+                        
+                        <!-- VERDICT HEADER -->
+                        <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}" CornerRadius="8" Padding="16">
+                            <StackPanel Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Name="VerdictIcon" Text="-" FontSize="24"/>
+                                    <TextBlock Name="VerdictTitle" Text="WAITING FOR INPUT" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock Name="VerdictSub" Text="Enter text and click Analyze to begin." TextWrapping="Wrap" FontSize="12" Opacity="0.8"/>
+                            </StackPanel>
+                        </Border>
 
+                        <!-- METRICS GRID -->
+                        <UniformGrid Columns="2" Rows="2">
+                            <StackPanel Margin="0,0,12,12">
+                                <TextBlock Text="Zero-Width" Classes="label"/>
+                                <TextBlock Name="ZeroWidthCount" Text="0" Classes="value"/>
+                            </StackPanel>
+                            <StackPanel Margin="12,0,0,12">
+                                <TextBlock Text="Homoglyphs" Classes="label"/>
+                                <TextBlock Name="HomoglyphCount" Text="0" Classes="value"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,12,12,0">
+                                <TextBlock Text="Bidi Overrides" Classes="label"/>
+                                <TextBlock Name="BidiCount" Text="0" Classes="value"/>
+                            </StackPanel>
+                            <StackPanel Margin="12,12,0,0">
+                                <TextBlock Text="Risk Score" Classes="label"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Name="ScoreValue" Text="0" Classes="value"/>
+                                    <TextBlock Text="/ 100" VerticalAlignment="Bottom" Margin="0,0,0,6" Opacity="0.6"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </UniformGrid>
+
+                        <!-- SCORE BAR -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Threat Level Visualization" Classes="label"/>
+                            <Border Height="8" CornerRadius="4" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" HorizontalAlignment="Left" Width="200" ClipToBounds="True">
+                                <Border Name="ScoreBar" Width="0" HorizontalAlignment="Left" Background="#5C6CF0"/>
+                            </Border>
+                        </StackPanel>
+
+                        <Separator Height="1" Background="{DynamicResource SystemControlForegroundBaseLowBrush}" Opacity="0.2"/>
+
+                        <!-- FINDINGS LIST -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Detailed Findings" Classes="label"/>
+                            <StackPanel Name="FindingsPanel" Spacing="4"/>
+                        </StackPanel>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

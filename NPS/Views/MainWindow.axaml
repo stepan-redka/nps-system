@@ -5,101 +5,125 @@
         mc:Ignorable="d"
         x:Class="NPS.MainWindow"
         Title="Unicode Adversarial Text Research Tool"
-        MinWidth="520" MinHeight="280"
-        WindowStartupLocation="CenterScreen"
-        Background="#0F0F13">
+        Width="900" Height="650"    
+        MinWidth="600" MinHeight="500" 
+        WindowStartupLocation="CenterScreen">
 
     <Window.Styles>
-        <Style Selector="Border.Card">
-            <Setter Property="Background" Value="#111118"/>
-            <Setter Property="BorderBrush" Value="#1A1A24"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="6"/>
+        <Style Selector="TextBlock.h1">
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
         </Style>
-        <Style Selector="Button">
-            <Setter Property="Background" Value="#161620"/>
-            <Setter Property="Foreground" Value="#5C6CF0"/>
-            <Setter Property="BorderBrush" Value="#202030"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="4"/>
-            <Setter Property="Width" Value="72"/>
-            <Setter Property="Padding" Value="0,6"/>
-            <Setter Property="FontSize" Value="10"/>
+        <Style Selector="TextBlock.h2">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.caption">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+            <Setter Property="LetterSpacing" Value="1"/>
+            <Setter Property="Opacity" Value="0.8"/>
+        </Style>
+        
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="32"/>
+            <Setter Property="Margin" Value="16"/>
+            <Setter Property="BoxShadow" Value="0 4 12 0 #15000000"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1"/>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        
+        <Style Selector="Border.card:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumBrush}"/>
+            <Setter Property="RenderTransform" Value="scale(1.02)"/>
+            <Setter Property="BoxShadow" Value="0 8 16 0 #20000000"/>
+        </Style>
+
+        <Style Selector="Button.action">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style Selector="Button:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#1E1E2C"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Margin" Value="0,15,0,0"/>
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="36,24,36,20">
+    <Grid RowDefinitions="Auto,*,Auto" Margin="40">
 
         <!-- HEADER -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,16">
-            <StackPanel Orientation="Horizontal" Spacing="9">
-                <Border Width="2.5" Height="16" CornerRadius="2"
-                        Background="#5B6BFF" VerticalAlignment="Center"/>
-                <TextBlock Text="Unicode Adversarial Text"
-                           FontSize="15" FontWeight="SemiBold"
-                           Foreground="#E2E2EE" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Spacing="8" Margin="0,0,0,40">
+            <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
+                <Border Width="6" Height="32" Background="{DynamicResource SystemControlBackgroundAccentBrush}" CornerRadius="3"/>
+                <TextBlock Classes="h1" Text="Unicode Adversarial Text"/>
             </StackPanel>
-            <TextBlock Text="RESEARCH TOOL  ·  ACADEMIC PROTOTYPE"
-                       FontSize="9" Foreground="#28283A"
-                       Margin="12,4,0,0" LetterSpacing="2"/>
+            <TextBlock Classes="caption" Text="RESEARCH TOOL · ACADEMIC PROTOTYPE" HorizontalAlignment="Center"/>
         </StackPanel>
 
-        <!-- CARDS — fill the * row entirely -->
-        <UniformGrid Grid.Row="1" Columns="2" Rows="1">
-
-            <Border Classes="Card" Margin="0,0,6,0">
-                <StackPanel VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Margin="24,0">
-                    <TextBlock Text="Attack Simulation"
-                               FontSize="11" FontWeight="SemiBold"
-                               Foreground="#C8C8DC" TextAlignment="Center"/>
-                    <TextBlock Text="Inject invisible characters and homoglyph substitutions."
-                               Foreground="#2C2C40" FontSize="10"
-                               TextWrapping="Wrap" TextAlignment="Center"
-                               Margin="0,5,0,12"/>
-                    <Button Name="AttackButton" Click="OnAttackClicked"
-                            Content="Launch" HorizontalAlignment="Center"/>
-                </StackPanel>
+        <!-- MAIN CONTENT cards -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="900">
+            
+            <!-- ATTACK CARD -->
+            <Border Grid.Column="0" Classes="card">
+                <Grid RowDefinitions="Auto,Auto,*,Auto">
+                    <TextBlock Grid.Row="0" Text="⚡" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <TextBlock Grid.Row="1" Text="Attack Simulation" Classes="h2" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                    <TextBlock Grid.Row="2" Text="Inject invisible characters, homoglyph substitutions and spoofing patterns to test text filters." 
+                               TextWrapping="Wrap" TextAlignment="Center" 
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               FontSize="14" LineHeight="20"/>
+                    <Button Grid.Row="3" Name="AttackButton" Click="OnAttackClicked" 
+                            Content="Launch Simulation" Classes="action accent"/>
+                </Grid>
             </Border>
 
-            <Border Classes="Card" Margin="6,0,0,0">
-                <StackPanel VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            Margin="24,0">
-                    <TextBlock Text="Detection &amp; Normalization"
-                               FontSize="11" FontWeight="SemiBold"
-                               Foreground="#C8C8DC" TextAlignment="Center"/>
-                    <TextBlock Text="Analyze text for spoofing and apply normalization defenses."
-                               Foreground="#2C2C40" FontSize="10"
-                               TextWrapping="Wrap" TextAlignment="Center"
-                               Margin="0,5,0,12"/>
-                    <Button Name="DetectButton" Click="OnDetectClicked"
-                            Content="Launch" HorizontalAlignment="Center"/>
-                </StackPanel>
+            <!-- DETECT CARD -->
+            <Border Grid.Column="1" Classes="card">
+                <Grid RowDefinitions="Auto,Auto,*,Auto">
+                    <TextBlock Grid.Row="0" Text="🔎" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                    <TextBlock Grid.Row="1" Text="Detection &amp; Normalization" Classes="h2" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                    <TextBlock Grid.Row="2" Text="Analyze text for Unicode spoofing, visualize hidden characters, and apply normalization defenses." 
+                               TextWrapping="Wrap" TextAlignment="Center" 
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               FontSize="14" LineHeight="20"/>
+                    <Button Grid.Row="3" Name="DetectButton" Click="OnDetectClicked" 
+                            Content="Launch Analysis" Classes="action accent" />
+                </Grid>
             </Border>
 
-        </UniformGrid>
-
-        <!-- SPACER -->
-        <Border Grid.Row="2" Height="1" Margin="0,16,0,0"
-                Background="#16161E"/>
+        </Grid>
 
         <!-- FOOTER -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,10,0,0" Spacing="5">
-            <TextBlock Text="Docs &amp; usage →"
-                       FontSize="10" Foreground="#22223A"/>
-            <TextBlock Text="github.com/your-org/your-repo"
-                       FontSize="10" Foreground="#3D4D8A"
-                       TextDecorations="Underline" Cursor="Hand"
-                       ToolTip.Tip="https://github.com/stepan-redka/nps-system"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center" Margin="0,40,0,0">
+            <TextBlock Text="Supported Vectors:" VerticalAlignment="Center" Classes="caption"/>
+            <ItemsControl>
+                <ItemsControl.Items>
+                    <x:String>Homoglyphs</x:String>
+                    <x:String>Zero-Width</x:String>
+                    <x:String>Bidi Override</x:String>
+                </ItemsControl.Items>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="10"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}" CornerRadius="6" Padding="10,5">
+                            <TextBlock Text="{Binding}" FontSize="12" FontWeight="Medium"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
 
     </Grid>
