@@ -7,75 +7,151 @@
 
     <Window.Styles>
         <Style Selector="TextBlock.h2">
-            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
         </Style>
-        
+
         <Style Selector="Button.secondary">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="Padding" Value="10,6"/>
         </Style>
-        
+
         <Style Selector="TextBox">
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Consolas, monospace"/>
+            <Setter Property="Padding" Value="10"/>
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="30">
+    <Grid RowDefinitions="Auto,*,Auto" Margin="24">
 
-        <!-- HEADER -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,20">
-            <Button Grid.Column="0" Content="←" Click="OnBackClicked" Classes="secondary" 
-                    ToolTip.Tip="Back to Menu" Width="40"/>
-            
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                <TextBlock Text="⚡" FontSize="20" VerticalAlignment="Center"/>
-                <TextBlock Text="Attack Simulation" Classes="h2" VerticalAlignment="Center"/>
-            </StackPanel>
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,16">
+            <Button Content="←"
+                    Click="OnBackClicked"
+                    Classes="secondary"
+                    Width="36" Height="36"/>
+
+            <TextBlock Grid.Column="1"
+                       Text="Attack Simulation"
+                       Classes="h2"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
         </Grid>
 
-        <!-- CONTENT -->
-        <Grid Grid.Row="1" ColumnDefinitions="*, 60, *" Margin="0,10">
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,*" ColumnSpacing="16">
+
+            <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto" RowSpacing="8">
+                <TextBlock Grid.Row="0" Text="Input Text" FontWeight="Medium"/>
+
+                <TextBox Grid.Row="1" Name="InputTextBox"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         Watermark="Paste text here or load file..."/>
+
+                <StackPanel Grid.Row="2" Spacing="10">
+
+                    <Border Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                            CornerRadius="10"
+                            Padding="14">
+                        <StackPanel Spacing="10">
+
+                            <TextBlock Text="Attack Settings"
+                                       FontWeight="SemiBold"
+                                       Opacity="0.8"/>
             
-            <!-- INPUT -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto">
-                <TextBlock Grid.Row="0" Text="Input Text" FontWeight="Medium" Margin="0,0,0,8"/>
-                <TextBox Grid.Row="1" Name="InputTextBox" 
-                         AcceptsReturn="True" TextWrapping="Wrap"
-                         Watermark="Paste text here or load file..."
-                         BorderThickness="1"/>
-                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
-                    <Button Content="Load File" Click="OnLoadFileClicked"/>
-                    <Button Content="Clear" Click="OnClearClicked"/>
+                            <ComboBox Name="AttackTypeComboBox" SelectedIndex="2" HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Injection Only"/>
+                                <ComboBoxItem Content="Replacement Only"/>
+                                <ComboBoxItem Content="Combined (Both)"/>
+                            </ComboBox>
+
+                            <StackPanel Spacing="4">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <TextBlock Text="Injection Frequency"
+                                            FontSize="12"/>
+
+                                    <TextBlock Text="{Binding #FrequencySlider.Value, StringFormat={}{0:P0}}"
+                                            FontSize="12"
+                                            Opacity="0.7"
+                                            HorizontalAlignment="Right"/>
+                                </Grid>
+
+                                <Slider Name="FrequencySlider"
+                                        Minimum="0"
+                                        Maximum="1"
+                                        Value="0.45"/>
+                            </StackPanel>
+
+                            <CheckBox Name="DirectionModeCheckBox"
+                                      Content="Reverse Mode (Latin to Cyrillic)"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Load File" Click="OnLoadFileClicked" Classes="secondary"/>
+                        <Button Content="Clear" Click="OnClearClicked" Classes="secondary"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 
-            <!-- ACTIONS (Center) -->
-            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
-                <Button Content="➤" Click="OnRunClicked" Classes="accent" 
-                        Width="40" Height="40" CornerRadius="20"
-                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                        FontSize="18" ToolTip.Tip="Run Attack"/>
-            </StackPanel>
+            <Grid Grid.Column="1" Width="60">
+                <Button Content="➜"
+                        Click="OnRunClicked"
+                        Classes="accent"
+                        Width="44" Height="44"
+                        CornerRadius="22"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="18"/>
+            </Grid>
 
-            <!-- OUTPUT -->
-            <Grid Grid.Column="2" RowDefinitions="Auto, *, Auto">
-                <TextBlock Grid.Row="0" Text="Adversarial Output" FontWeight="Medium" Margin="0,0,0,8"/>
-                <TextBox Grid.Row="1" Name="OutputTextBox" 
-                         AcceptsReturn="True" TextWrapping="Wrap"
+            <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto,Auto" RowSpacing="8">
+                
+                <TextBlock Grid.Row="0" Text="Adversarial Output" FontWeight="Medium"/>
+
+                <TextBox Grid.Row="1" Name="OutputTextBox"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
                          IsReadOnly="True"
                          Watermark="Generated text will appear here..."
-                         BorderThickness="1" Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
-                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0" HorizontalAlignment="Right">
-                    <Button Content="Copy to Clipboard" Click="OnCopyClicked" Classes="accent"/>
+                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}"/>
+
+                <Border Grid.Row="2" 
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        CornerRadius="10"
+                        Padding="14"
+                        Height="160"> 
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,8">
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                <TextBlock Text="Visual Inspector" FontWeight="SemiBold" Opacity="0.8"/>
+                                <TextBlock Text="■ Injections" Foreground="#E74C3C" FontSize="12" VerticalAlignment="Center"/>
+                                <TextBlock Text="■ Homoglyphs" Foreground="#2ECC71" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            
+                            <Button Grid.Column="1" Content="Inspect" Click="OnInspectClicked" Classes="secondary" Padding="8,4" FontSize="12"/>
+                        </Grid>
+                        
+                        <ScrollViewer Grid.Row="1">
+                            <SelectableTextBlock Name="VisualizerBlock" 
+                                                TextWrapping="Wrap" 
+                                                FontFamily="Consolas, monospace"
+                                                FontSize="14"/>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                    <Button Content="Save File" Click="OnSaveFileClicked" Classes="secondary"/>
+                    <Button Content="Copy" Click="OnCopyClicked" Classes="accent"/>
                 </StackPanel>
+                
             </Grid>
+
         </Grid>
     </Grid>
 </Window>

@@ -2,21 +2,37 @@ using NPS.Services.Interfaces;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using System.Windows;
 
 namespace NPS.Services;
 
 public class ReplaceService : IReplaceService
 {
     private readonly Dictionary<char, char> _latinToCyrillic = new()
-    {
-        ['a'] = '\u0430', ['e'] = '\u0435', ['o'] = '\u043E', 
-        ['p'] = '\u0440', ['c'] = '\u0441', ['x'] = '\u0445', ['y'] = '\u0443',
-        ['A'] = '\u0410', ['B'] = '\u0412', ['C'] = '\u0421', 
-        ['E'] = '\u0415', ['H'] = '\u041D', ['K'] = '\u041A', 
-        ['M'] = '\u041C', ['O'] = '\u041E', ['P'] = '\u0420', 
-        ['T'] = '\u0422', ['X'] = '\u0425', ['Y'] = '\u0423'
-    };
+{
+    // lowercase
+    ['a'] = '\u0430', // а
+    ['e'] = '\u0435', // е
+    ['o'] = '\u043E', // о
+    ['p'] = '\u0440', // р
+    ['c'] = '\u0441', // с
+    ['x'] = '\u0445', // х
+    ['y'] = '\u0443', // у
+    ['i'] = '\u0456', // і  
+    // uppercase
+    ['A'] = '\u0410', // А
+    ['B'] = '\u0412', // В
+    ['C'] = '\u0421', // С
+    ['E'] = '\u0415', // Е
+    ['H'] = '\u041D', // Н
+    ['K'] = '\u041A', // К
+    ['M'] = '\u041C', // М
+    ['O'] = '\u041E', // О
+    ['P'] = '\u0420', // Р
+    ['T'] = '\u0422', // Т
+    ['X'] = '\u0425', // Х
+    ['Y'] = '\u0423', // У
+    ['I'] = '\u0406'  // І  
+};
     
     private readonly Dictionary<char, char> _cyrillicToLatin;
 
@@ -31,7 +47,7 @@ public class ReplaceService : IReplaceService
     
         Dictionary<char, char> activeDictionary;
 
-        if (mode == true) 
+        if (mode == false) 
         {
             activeDictionary = _latinToCyrillic; 
         }
@@ -48,5 +64,17 @@ public class ReplaceService : IReplaceService
         }
     
         return sb.ToString();
+    }
+
+    public bool IsTargetHomoglyph(char c, bool mode)
+    {
+        if (mode == true) 
+        {
+            return _latinToCyrillic.ContainsKey(c);
+        }
+        else 
+        {
+            return _cyrillicToLatin.ContainsKey(c);
+        }
     }
 }

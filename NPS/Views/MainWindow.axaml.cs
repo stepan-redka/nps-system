@@ -1,16 +1,22 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Platform;
 using NPS.Views;
+using NPS.Services.Interfaces;
 
 namespace NPS;
 
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    private readonly IInjectService _injector;
+    private readonly IReplaceService _replacer;
+
+    public MainWindow(IInjectService injector, IReplaceService replacer)
     {
         InitializeComponent();
         ScaleToScreen();
+        
+        _injector = injector;
+        _replacer = replacer;
     }
 
     private void ScaleToScreen()
@@ -32,9 +38,9 @@ public partial class MainWindow : Window
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
 
-    private void OnAttackClicked(object? sender, RoutedEventArgs e)
+   private void OnAttackClicked(object? sender, RoutedEventArgs e)
     {
-        var window = new AttackWindow();
+        var window = new AttackWindow(_injector, _replacer);
         window.Position = Position;
         window.Width    = Width;
         window.Height   = Height;
@@ -44,7 +50,7 @@ public partial class MainWindow : Window
 
     private void OnDetectClicked(object? sender, RoutedEventArgs e)
     {
-        var window = new DetectWindow();
+        var window = new DetectWindow(_injector, _replacer);
         window.Position = Position;
         window.Width    = Width;
         window.Height   = Height;

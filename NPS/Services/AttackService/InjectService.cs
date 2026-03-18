@@ -27,4 +27,9 @@ public class InjectService : IInjectService
 
         return sb.ToString();
     }
+
+    public bool IsInjectedChar(char c)
+    {
+        return c == InvisibleChar;
+    }
 }
