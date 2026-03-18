@@ -4,19 +4,27 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using NPS;
 using System.IO;
+using NPS.Services;
+using NPS.Services.Interfaces;
 
 namespace NPS.Views;
 
 public partial class DetectWindow : Window
 {
-    // hardcoded suspicion threshold (0–100)
+private readonly IInjectService _injector;
+    private readonly IReplaceService _replacer;    // hardcoded suspicion threshold (0–100)
     private const int SuspicionThreshold = 40;
 
-    public DetectWindow() => InitializeComponent();
+    public DetectWindow(IInjectService injector, IReplaceService replacer)
+    {
+        InitializeComponent();
+        _injector = injector;
+        _replacer = replacer;
+    }
 
     private void OnBackClicked(object? sender, RoutedEventArgs e)
     {
-        var main = new MainWindow();
+        var main = new MainWindow(_injector, _replacer);
         main.Position = Position;
         main.Width = Width;
         main.Height = Height;
