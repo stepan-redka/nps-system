@@ -53,4 +53,51 @@ public class DetectService : IDetectService
         //тому повертаємо -entropy, щоб отримати позитивну ентропію
         return -entropy; 
     }
+
+    public Dictionary<string, int> CalculateAlphabetDistribution(string text)
+    {
+        var distribution = new Dictionary<string, int>
+        {
+            { "Latin", 0 },
+            { "Cyrillic", 0 },
+            { "Other", 0 }
+        };
+
+        if (string.IsNullOrEmpty(text)) return distribution;
+
+        // 1. Отримуємо частоти всіх символів
+        CalculateFrequencies(text);
+
+        // 2. Беремо кожну пару "символ - кількість" з нашого словника
+        foreach (var pair in _frequencies)
+        {
+            char symbol = pair.Key;     // Наприклад, 'a', 'Б', чи пробіл
+            int count = pair.Value;     // Скільки разів він є у тексті
+
+            // 3. Сортуємо по коробках!
+            // TODO: Перевірити символ і додати count до потрібної категорії в distribution
+            if (char.IsLetter(symbol))
+            {
+                if ((symbol >= 'A' && symbol <= 'Z') || (symbol >= 'a' && symbol <= 'z'))
+                {
+                    distribution["Latin"] += count;
+                }
+                else if ((symbol >= 'А' && symbol <= 'я') || symbol == 'Ё' || symbol == 'ё')
+                {
+                    distribution["Cyrillic"] += count;
+                }
+                else
+                {
+                    distribution["Other"] += count;
+                }
+            }
+            else
+            {
+                distribution["Other"] += count;
+            }
+        }
+
+
+        return distribution;
+    }
 }
