@@ -103,8 +103,36 @@
                         <StackPanel Spacing="8">
                             <TextBlock Text="Threat Level Visualization" Classes="label"/>
                             <Border Height="8" CornerRadius="4" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" HorizontalAlignment="Left" Width="200" ClipToBounds="True">
-                                <Border Name="ScoreBar" Width="0" HorizontalAlignment="Left" Background="#5C6CF0"/>
+                                <Border Name="ScoreBar" Width="0" HorizontalAlignment="Left" Background="#4F46E5"/>
                             </Border>
+                        </StackPanel>
+
+                        <!-- SCRIPT DISTRIBUTION PLOTS -->
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Script Distribution" Classes="label"/>
+                            <StackPanel Spacing="6">
+                                <Grid ColumnDefinitions="80, *, 40">
+                                    <TextBlock Grid.Column="0" Text="Latin" FontSize="11" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Height="14" Background="#E5E7EB" CornerRadius="7" ClipToBounds="True">
+                                        <Border Name="LatinBar" Width="0" HorizontalAlignment="Left" Background="#4F46E5"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Name="LatinPct" Text="0%" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid ColumnDefinitions="80, *, 40">
+                                    <TextBlock Grid.Column="0" Text="Cyrillic" FontSize="11" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Height="14" Background="#E5E7EB" CornerRadius="7" ClipToBounds="True">
+                                        <Border Name="CyrillicBar" Width="0" HorizontalAlignment="Left" Background="#10B981"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Name="CyrillicPct" Text="0%" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid ColumnDefinitions="80, *, 40">
+                                    <TextBlock Grid.Column="0" Text="Other" FontSize="11" VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" Height="14" Background="#E5E7EB" CornerRadius="7" ClipToBounds="True">
+                                        <Border Name="OtherBar" Width="0" HorizontalAlignment="Left" Background="#9CA3AF"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Name="OtherPct" Text="0%" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </StackPanel>
                         </StackPanel>
 
                         <Separator Height="1" Background="{DynamicResource SystemControlForegroundBaseLowBrush}" Opacity="0.2"/>

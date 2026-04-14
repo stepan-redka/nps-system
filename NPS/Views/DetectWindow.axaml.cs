@@ -68,41 +68,64 @@ public partial class DetectWindow : Window
         var text = InputTextBox.Text ?? string.Empty;
         if (string.IsNullOrWhiteSpace(text)) return;
 
+        var distribution = _detector.CalculateAlphabetDistribution(text);
+        
         int zeroWidth  = CountZeroWidth(text);
-        int homoglyphs = DetectHomoglyphs(text);
         int bidi       = CountBidi(text);
+        int homoglyphs = DetectHomoglyphs(text, distribution);
 
         // Entropy analysis: detect low entropy (randomness) that might indicate obfuscation
         double entropy = _detector.CalculateEntropy(text);
-        // Reduce sensitivity: only penalize if entropy is extremely low (e.g., < 2.5 for short strings or highly repetitive content)
-        int entropyPenalty = (text.Length > 20 && entropy < 2.5) ? 15 : 0;
+        // Only penalize if entropy is EXTREMELY low for the given length
+        int entropyPenalty = (text.Length > 30 && entropy < 2.2) ? 15 : 0;
 
-        // Alphabet mixing: detect unusual language mixing
-        var distribution = _detector.CalculateAlphabetDistribution(text);
+        // Alphabet mixing penalty
         int mixingPenalty = DetectAlphabetMixing(distribution);
 
         int score = CalculateScore(zeroWidth, homoglyphs, bidi, text.Length, entropyPenalty, mixingPenalty);
 
-        // update metric tiles
+        // Update UI metrics
         ZeroWidthCount.Text  = zeroWidth.ToString();
         HomoglyphCount.Text  = homoglyphs.ToString();
         BidiCount.Text       = bidi.ToString();
         ScoreValue.Text      = score.ToString();
 
-        // update score bar
+        // Update score bar
         ScoreBar.Width = score * 2;
         ScoreBar.Background = score >= SuspicionThreshold
             ? new SolidColorBrush(Color.Parse("#C0392B"))
-            : new SolidColorBrush(Color.Parse("#5C6CF0"));
+            : new SolidColorBrush(Color.Parse("#4F46E5"));
 
-        // verdict banner
+        // Update distribution charts
+        UpdateDistributionCharts(distribution);
+
+        // Verdict banner
         UpdateVerdict(score, zeroWidth, homoglyphs, bidi);
 
-        // normalization
+        // Normalization
         PerformNormalization(text);
 
-        // findings list
+        // Findings list
         PopulateFindings(text, zeroWidth, bidi, entropy, distribution);
+    }
+
+    private void UpdateDistributionCharts(Dictionary<string, int> distribution)
+    {
+        int total = distribution.Values.Sum();
+        if (total == 0) return;
+
+        double latinRatio = (double)distribution["Latin"] / total;
+        double cyrillicRatio = (double)distribution["Cyrillic"] / total;
+        double otherRatio = (double)distribution["Other"] / total;
+
+        // Animate or set widths (using 200 as base width for the bars)
+        LatinBar.Width = latinRatio * 200;
+        CyrillicBar.Width = cyrillicRatio * 200;
+        OtherBar.Width = otherRatio * 200;
+
+        LatinPct.Text = $"{latinRatio:P0}";
+        CyrillicPct.Text = $"{cyrillicRatio:P0}";
+        OtherPct.Text = $"{otherRatio:P0}";
     }
 
     private void PerformNormalization(string text)
@@ -128,15 +151,15 @@ public partial class DetectWindow : Window
     {
         bool suspicious = score >= SuspicionThreshold;
 
-        VerdictTitle.Text      = suspicious ? "SUSPICIOUS — THRESHOLD EXCEEDED" : "CLEAN — BELOW THRESHOLD";
+        VerdictTitle.Text      = suspicious ? "SUSPICIOUS — THREAT DETECTED" : "CLEAN — NO THREAT DETECTED";
         VerdictTitle.Foreground = suspicious
             ? new SolidColorBrush(Color.Parse("#C0392B"))
-            : new SolidColorBrush(Color.Parse("#27AE60"));
+            : new SolidColorBrush(Color.Parse("#10B981"));
         VerdictIcon.Text       = suspicious ? "⚠" : "✓";
         VerdictIcon.Foreground = VerdictTitle.Foreground;
         VerdictSub.Text        = suspicious
-            ? $"Detected {zw + hg + bidi} anomalies. Score {score}/100 exceeds threshold of {SuspicionThreshold}."
-            : $"No significant anomalies. Score {score}/100 is within safe range.";
+            ? $"Identified {zw + hg + bidi} anomalies. Security score {score}/100 exceeds safety threshold."
+            : $"Text analysis completed. Security score {score}/100 is within nominal range.";
     }
 
     private void PopulateFindings(string text, int zw, int bidi, double entropy, Dictionary<string, int> distribution)
@@ -144,52 +167,61 @@ public partial class DetectWindow : Window
         FindingsPanel.Children.Clear();
         var findings = new List<string>();
 
-        if (zw > 0)  findings.Add($"{zw}× zero-width character(s)");
-        if (bidi > 0) findings.Add($"{bidi}× Bidi override character(s)");
+        if (zw > 0)  findings.Add($"{zw}× invisible character injection(s)");
+        if (bidi > 0) findings.Add($"{bidi}× bidirectional override(s)");
 
-        if (entropy < 3.5) findings.Add($"Low entropy ({entropy:F2}) suggests obfuscation");
+        if (text.Length > 30 && entropy < 2.5) findings.Add($"Low entropy ({entropy:F2}) suggests pattern obfuscation");
 
         int total = distribution.Values.Sum();
         if (total > 0)
         {
             int latin = distribution["Latin"];
             int cyrillic = distribution["Cyrillic"];
-            if (latin > 0 && cyrillic > 0 && latin < total * 0.9 && cyrillic < total * 0.9)
-                findings.Add("Mixed Latin/Cyrillic detected");
+            if (latin > 0 && cyrillic > 0)
+            {
+                double latinRatio = (double)latin / total;
+                double cyrillicRatio = (double)cyrillic / total;
+                if (latinRatio < 0.9 && cyrillicRatio < 0.9)
+                    findings.Add("Anomalous script mixing (Latin/Cyrillic)");
+            }
         }
 
         if (findings.Count == 0)
         {
             FindingsPanel.Children.Add(new TextBlock
             {
-                Text = "No anomalies detected.",
-                Foreground = new SolidColorBrush(Color.Parse("#25253A")),
-                FontSize = 10
+                Text = "No security anomalies detected.",
+                Foreground = new SolidColorBrush(Color.Parse("#6B7280")),
+                FontSize = 11,
+                FontStyle = FontStyle.Italic
             });
             return;
         }
 
         foreach (var finding in findings)
-            AddFinding(finding, findings.IndexOf(finding) == 0 ? "#5C6CF0" : "#C0392B");
+            AddFinding(finding, "#EF4444");
     }
 
     private void AddFinding(string message, string color)
     {
         FindingsPanel.Children.Add(new TextBlock
         {
-            Text = $"· {message}",
+            Text = $"• {message}",
             Foreground = new SolidColorBrush(Color.Parse(color)),
-            FontSize = 10
+            FontSize = 11,
+            Margin = new Avalonia.Thickness(0, 2)
         });
     }
 
     private void ResetUI()
     {
-        ZeroWidthCount.Text = HomoglyphCount.Text = BidiCount.Text = ScoreValue.Text = "—";
+        ZeroWidthCount.Text = HomoglyphCount.Text = BidiCount.Text = ScoreValue.Text = "0";
         ScoreBar.Width = 0;
+        LatinBar.Width = CyrillicBar.Width = OtherBar.Width = 0;
+        LatinPct.Text = CyrillicPct.Text = OtherPct.Text = "0%";
         VerdictTitle.Text = "AWAITING ANALYSIS";
-        VerdictTitle.Foreground = new SolidColorBrush(Color.Parse("#28283A"));
-        VerdictIcon.Text = "·";
+        VerdictTitle.Foreground = new SolidColorBrush(Color.Parse("#374151"));
+        VerdictIcon.Text = "•";
         VerdictIcon.Foreground = VerdictTitle.Foreground;
         VerdictSub.Text = "Paste text and click Analyze to begin.";
         FindingsPanel.Children.Clear();
@@ -198,7 +230,6 @@ public partial class DetectWindow : Window
         CopyNormalizedButton.IsEnabled = false;
     }
 
-    // --- placeholder detection helpers (replace with your engine) ---
     private static int CountZeroWidth(string t)
     {
         int n = 0;
@@ -220,35 +251,42 @@ public partial class DetectWindow : Window
     private static int CalculateScore(int zw, int hg, int bidi, int length, int entropyPenalty, int mixingPenalty)
     {
         if (length == 0) return 0;
-        double raw = (zw * 3.0 + hg * 4.0 + bidi * 5.0) / length * 300;
+        double raw = (zw * 4.0 + hg * 5.0 + bidi * 6.0) / length * 350;
         return (int)System.Math.Min(raw + (zw + hg + bidi) * 2 + entropyPenalty + mixingPenalty, 100);
     }
 
-    private int DetectHomoglyphs(string text)
+    private int DetectHomoglyphs(string text, Dictionary<string, int> distribution)
     {
+        int latin = distribution["Latin"];
+        int cyrillic = distribution["Cyrillic"];
+        
+        if (latin == 0 || cyrillic == 0) return 0; // No mixing, no homoglyph threat
+
+        // Detect characters from the "minority" script that are valid homoglyphs
+        bool detectLatinAsHomoglyphs = latin < cyrillic;
         int count = 0;
-        var seenCombos = new HashSet<(char, char)>();
+        var seenChars = new HashSet<char>();
 
-        for (int i = 0; i < text.Length - 1; i++)
+        foreach (char c in text)
         {
-            char curr = text[i];
-            char next = text[i + 1];
-
-            // Check if current char is a homoglyph replacement (exists in replacer mapping)
-            if (!char.IsLetter(curr) || !char.IsLetter(next))
-                continue;
-
-            var combo = (curr, next);
-            if (seenCombos.Add(combo))
+            if (!char.IsLetter(c)) continue;
+            if (seenChars.Add(c))
             {
-                // Test if this could be a homoglyph (basic heuristic)
-                if (_replacer.IsTargetHomoglyph(curr, false) || _replacer.IsTargetHomoglyph(curr, true))
-                    count++;
+                if (detectLatinAsHomoglyphs)
+                {
+                    if (IsLatin(c) && _replacer.IsTargetHomoglyph(c, true)) count++;
+                }
+                else
+                {
+                    if (IsCyrillic(c) && _replacer.IsTargetHomoglyph(c, false)) count++;
+                }
             }
         }
-
         return count;
     }
+
+    private bool IsLatin(char c) => (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+    private bool IsCyrillic(char c) => (c >= 'А' && c <= 'я') || c == 'Ё' || c == 'ё' || c == 'і' || c == 'І';
 
     private int DetectAlphabetMixing(Dictionary<string, int> distribution)
     {
@@ -258,14 +296,14 @@ public partial class DetectWindow : Window
         int latin = distribution["Latin"];
         int cyrillic = distribution["Cyrillic"];
 
-        // Penalize if both scripts present in significant amounts (10-90% each)
         if (latin > 0 && cyrillic > 0)
         {
             double latinRatio = (double)latin / total;
             double cyrillicRatio = (double)cyrillic / total;
 
-            if (latinRatio > 0.1 && latinRatio < 0.9 && cyrillicRatio > 0.1 && cyrillicRatio < 0.9)
-                return 10;
+            // Only penalize if mixing is significant (at least 2% and less than 98%)
+            if (latinRatio > 0.02 && latinRatio < 0.98 && cyrillicRatio > 0.02 && cyrillicRatio < 0.98)
+                return 15;
         }
 
         return 0;
