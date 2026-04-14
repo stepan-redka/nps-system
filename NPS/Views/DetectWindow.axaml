@@ -38,19 +38,26 @@
         <Grid Grid.Row="1" ColumnDefinitions="*, 360">
             
             <!-- LEFT: INPUT -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto" Margin="0,0,24,0">
-                <TextBlock Grid.Row="0" Text="Source Text Analysis" Classes="label" Margin="0,0,0,8"/>
-                <TextBox Grid.Row="1" Name="InputTextBox" AcceptsReturn="True" TextWrapping="Wrap" 
-                         Watermark="Paste suspicious text here..." 
-                         FontSize="14" FontFamily="Consolas, monospace"
-                         BorderThickness="1" CornerRadius="4"/>
-                
-                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="12" Margin="0,16,0,0">
-                    <Button Content="Simulate Analysis" Click="OnAnalyzeClicked" Classes="accent" FontSize="14" FontWeight="Bold" Padding="20,8"/>
-                    <Button Content="Load from File..." Click="OnLoadFileClicked"/>
-                    <Button Content="Clear" Click="OnClearClicked"/>
+            <StackPanel Grid.Column="0" Margin="0,0,24,0" Spacing="16">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Source Text Analysis" Classes="label"/>
+                    <TextBox Name="InputTextBox" 
+                             AcceptsReturn="True" 
+                             TextWrapping="Wrap" 
+                             Height="280"
+                             Watermark="Paste suspicious text here..." 
+                             FontSize="14" 
+                             FontFamily="Consolas, monospace"
+                             BorderThickness="1" 
+                             CornerRadius="6"/>
                 </StackPanel>
-            </Grid>
+                
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Content="Analyze Text" Click="OnAnalyzeClicked" Classes="accent" FontSize="14" FontWeight="Bold" Padding="24,10"/>
+                    <Button Content="Load File" Click="OnLoadFileClicked" Classes="secondary"/>
+                    <Button Content="Clear" Click="OnClearClicked" Classes="secondary"/>
+                </StackPanel>
+            </StackPanel>
 
             <!-- RIGHT: DASHBOARD -->
             <Border Grid.Column="1" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" 
@@ -97,6 +104,33 @@
                             <TextBlock Text="Threat Level Visualization" Classes="label"/>
                             <Border Height="8" CornerRadius="4" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" HorizontalAlignment="Left" Width="200" ClipToBounds="True">
                                 <Border Name="ScoreBar" Width="0" HorizontalAlignment="Left" Background="#5C6CF0"/>
+                            </Border>
+                        </StackPanel>
+
+                        <Separator Height="1" Background="{DynamicResource SystemControlForegroundBaseLowBrush}" Opacity="0.2"/>
+
+                        <!-- NORMALIZATION SECTION -->
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Recovery &amp; Normalization" Classes="label"/>
+                            <Border Background="{DynamicResource SystemControlBackgroundBaseLowBrush}" CornerRadius="8" Padding="12">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Name="NormalizationStats" Text="No recovery data yet." FontSize="11" Opacity="0.7" TextWrapping="Wrap"/>
+                                    <TextBox Name="NormalizedTextBox" 
+                                             IsReadOnly="True" 
+                                             Height="80" 
+                                             FontSize="12" 
+                                             TextWrapping="Wrap" 
+                                             Watermark="Clean text will appear here..."
+                                             Background="Transparent"
+                                             BorderThickness="0"/>
+                                    <Button Content="Copy Clean Text" 
+                                            Name="CopyNormalizedButton"
+                                            Click="OnCopyNormalizedClicked" 
+                                            HorizontalAlignment="Right" 
+                                            FontSize="11" 
+                                            Padding="10,4"
+                                            IsEnabled="False"/>
+                                </StackPanel>
                             </Border>
                         </StackPanel>
 
