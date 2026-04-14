@@ -74,7 +74,8 @@ public partial class DetectWindow : Window
 
         // Entropy analysis: detect low entropy (randomness) that might indicate obfuscation
         double entropy = _detector.CalculateEntropy(text);
-        int entropyPenalty = entropy < 3.5 ? 15 : 0;
+        // Reduce sensitivity: only penalize if entropy is extremely low (e.g., < 2.5 for short strings or highly repetitive content)
+        int entropyPenalty = (text.Length > 20 && entropy < 2.5) ? 15 : 0;
 
         // Alphabet mixing: detect unusual language mixing
         var distribution = _detector.CalculateAlphabetDistribution(text);
