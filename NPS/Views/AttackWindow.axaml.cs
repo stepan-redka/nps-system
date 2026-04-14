@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using System.IO;
 using Avalonia.Media;
 using Avalonia.Controls.Documents;
+using NPS.Services;
 using NPS.Services.Interfaces;
 
 namespace NPS.Views;
@@ -13,19 +14,25 @@ public partial class AttackWindow : Window
 
     private readonly IInjectService _injector;
     private readonly IReplaceService _replacer;
+    private readonly IDetectService _detector;
+    private readonly INormalizeService _normalizer;
     private string _lastInjectedText = string.Empty;
 
-    public AttackWindow(IInjectService injector, IReplaceService replacer)
+    public AttackWindow(IInjectService injector, IReplaceService replacer, IDetectService detector, INormalizeService normalizer)
     {
         InitializeComponent();
         _injector = injector;
         _replacer = replacer;
+        _detector = detector;
+        _normalizer = normalizer;
     }
 
     private void OnBackClicked(object? sender, RoutedEventArgs e)
     {
-        var main = new MainWindow(_injector, _replacer);
+        var main = new MainWindow(_injector, _replacer, _detector, _normalizer);
         main.Position = Position;
+        main.Width = Width;
+        main.Height = Height;
         main.Show();
         Close();
     }
@@ -114,7 +121,6 @@ public partial class AttackWindow : Window
         
         if (outputText.Length != _lastInjectedText.Length) return;
 
-        // Використовуємо for замість foreach
         for (int i = 0; i < outputText.Length; i++)
         {
             char currentChar = outputText[i];

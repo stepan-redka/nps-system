@@ -9,14 +9,18 @@ public partial class MainWindow : Window
 {
     private readonly IInjectService _injector;
     private readonly IReplaceService _replacer;
+    private readonly IDetectService _detector;
+    private readonly INormalizeService _normalizer;
 
-    public MainWindow(IInjectService injector, IReplaceService replacer)
+    public MainWindow(IInjectService injector, IReplaceService replacer, IDetectService detector, INormalizeService normalizer)
     {
         InitializeComponent();
         ScaleToScreen();
-        
+
         _injector = injector;
         _replacer = replacer;
+        _detector = detector;
+        _normalizer = normalizer;
     }
 
     private void ScaleToScreen()
@@ -40,7 +44,7 @@ public partial class MainWindow : Window
 
    private void OnAttackClicked(object? sender, RoutedEventArgs e)
     {
-        var window = new AttackWindow(_injector, _replacer);
+        var window = new AttackWindow(_injector, _replacer, _detector, _normalizer);
         window.Position = Position;
         window.Width    = Width;
         window.Height   = Height;
@@ -50,7 +54,7 @@ public partial class MainWindow : Window
 
     private void OnDetectClicked(object? sender, RoutedEventArgs e)
     {
-        var window = new DetectWindow(_injector, _replacer);
+        var window = new DetectWindow(_injector, _replacer, _detector, _normalizer);
         window.Position = Position;
         window.Width    = Width;
         window.Height   = Height;

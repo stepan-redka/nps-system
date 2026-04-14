@@ -20,8 +20,10 @@ public partial class App : Application
         {
             var injectService = new InjectService();
             var replaceService = new ReplaceService();
+            var detectService = new DetectService();
+            var normalizeService = new NormalizeService();
 
-            desktop.MainWindow = new MainWindow(injectService, replaceService);
+            desktop.MainWindow = new MainWindow(injectService, replaceService, detectService, normalizeService);
         }
 
         base.OnFrameworkInitializationCompleted();
